@@ -125,9 +125,9 @@ The server is architected to accept additional read-side tools (see Roadmap) and
 
 ## Roadmap
 
-Tools decided but not built in the initial release. Shapes captured here to avoid re-deriving; finalized at build time. All are read-side; write-side tools require a future ADR (see Deferred).
+Phase 0 (foundation) and Phase 1 (core read tools — `pdf.read` + `pdf.info`, the initial release) are shipped; see `plan.md`. The tools below are decided but not yet built. Shapes captured here to avoid re-deriving; finalized at build time. All are read-side; write-side tools require a future ADR (see Deferred).
 
-### Phase 1 (high value or cheap, no new dependencies)
+### Phase 2 (high value or cheap, no new dependencies)
 
 - **`pdf.outline`** — document outline / bookmarks / TOC.
   - Input: `path` (absolute), `password?`.
@@ -145,7 +145,7 @@ Tools decided but not built in the initial release. Shapes captured here to avoi
   - Input: `path` (absolute), `password?`, `pages` (Page Range, optional), `maxPages` (number, default 500).
   - Output `structuredContent`: `{totalPages, pagesReturned, pages:[{page, width, height, rotation, userUnit}]}`. Units: PDF points (user-space, from unscaled `page.view`). `rotation` degrees (0/90/180/270); `userUnit` default 1.0.
 
-### Phase 2 (richer, more nuance)
+### Phase 3 (richer, more nuance)
 
 - **`pdf.links`** — hyperlinks and internal links, rich.
   - Input: `path` (absolute), `password?`, `pages?`.
