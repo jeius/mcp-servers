@@ -1,0 +1,30 @@
+{
+  "name": "@jeius-mcp-servers/runner",
+  "version": "1.0.0",
+  "description": "MCP server runner — run or develop any server in the family by name (mcp-serve)",
+  "license": "MIT",
+  "author": "Julius Pahama",
+  "type": "module",
+  "bin": {
+    "mcp-serve": "./build/index.js"
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json && chmod 755 build/index.js",
+    "check-types": "tsc --noEmit",
+    "lint": "biome lint",
+    "format": "biome format",
+    "fix": "biome check --write .",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "chokidar": "^4.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.11"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

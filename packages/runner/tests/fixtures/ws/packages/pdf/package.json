@@ -1,0 +1,10 @@
+{
+  "name": "@fixture/pdf",
+  "version": "1.0.0",
+  "bin": {
+    "pdf": "./build/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "^2.0.0"
+  }
+}
