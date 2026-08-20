@@ -1,51 +1,24 @@
-# Domain Docs
+# Domain docs: per-package layout
 
-How the engineering skills should consume this repo's domain documentation when exploring the codebase.
+Each package in the monorepo owns its own domain glossary and package-specific decisions. The root holds only repo-wide decisions.
 
-## Before exploring, read these
+## Per-package
 
-- **`CONTEXT.md`** at the repo root, or
-- **`CONTEXT-MAP.md`** at the repo root if it exists: it points at one `CONTEXT.md` per context. Read each one relevant to the topic.
-- **`docs/adr/`**: read ADRs that touch the area you're about to work in. In multi-context repos, also check `src/<context>/docs/adr/` for context-scoped decisions.
+- **`packages/<name>/CONTEXT.md`** — the package's domain glossary. Terms specific to that server (e.g. Page, Text Item, Encrypted PDF for the pdf package).
+- **`packages/<name>/docs/adr/`** — package-specific Architecture Decision Records. Decisions that affect only this package (e.g. library choice, tool namespacing).
 
-If any of these files don't exist, **proceed silently**. Don't flag their absence; don't suggest creating them upfront. The `/domain-modeling` skill (reached via `/grill-with-docs` and `/improve-codebase-architecture`) creates them lazily when terms or decisions actually get resolved.
+## Root
 
-## File structure
+- **`docs/adr/`** — repo-wide ADRs only. Decisions that affect every package (e.g. linter choice, monorepo structure, CI, Node engine floor).
 
-Single-context repo (most repos):
+## ADR numbering
 
-```txt
-/
-├── CONTEXT.md
-├── docs/adr/
-│   ├── 0001-event-sourced-orders.md
-│   └── 0002-postgres-for-write-model.md
-└── src/
-```
+ADRs are **globally sequential** across the whole monorepo but **split by location**: root `docs/adr/` holds repo-wide decisions; `packages/<name>/docs/adr/` holds package-specific decisions. Cross-references use the bare number (e.g. "see ADR-0004"); location resolves scope. Next ADR anywhere = the next unused number. See ADR-0004 for the full rule.
 
-Multi-context repo (presence of `CONTEXT-MAP.md` at the root):
+## When a skill says "publish to the issue tracker"
 
-```txt
-/
-├── CONTEXT-MAP.md
-├── docs/adr/                          ← system-wide decisions
-└── src/
-    ├── ordering/
-    │   ├── CONTEXT.md
-    │   └── docs/adr/                  ← context-specific decisions
-    └── billing/
-        ├── CONTEXT.md
-        └── docs/adr/
-```
+Create a GitHub issue (see `issue-tracker.md`).
 
-## Use the glossary's vocabulary
+## When a skill says "fetch the relevant ticket"
 
-When your output names a domain concept (in an issue title, a refactor proposal, a hypothesis, a test name), use the term as defined in `CONTEXT.md`. Don't drift to synonyms the glossary explicitly avoids.
-
-If the concept you need isn't in the glossary yet, that's a signal: either you're inventing language the project doesn't use (reconsider) or there's a real gap (note it for `/domain-modeling`).
-
-## Flag ADR conflicts
-
-If your output contradicts an existing ADR, surface it explicitly rather than silently overriding:
-
-> _Contradicts ADR-0007 (event-sourced orders), but worth reopening because…_
+Run `gh issue view <number> --comments`.

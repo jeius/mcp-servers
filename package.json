@@ -1,25 +1,21 @@
 {
-  "name": "@jeius/server-pdf",
-  "version": "1.0.0",
-  "description": "MCP server for pdf",
-  "license": "MIT",
-  "author": "Julius Pahama",
+  "name": "@jeius-mcp-servers",
+  "private": true,
   "type": "module",
-  "main": "build/index.js",
-  "bin": {
-    "pdf": "./build/index.js"
+  "engines": {
+    "node": ">=22"
   },
+  "packageManager": "pnpm@11.22.0+sha512.1ff870c4c6133dfd88fb2afc46dd13d47f09c9794b438c6fdb47ca98caf3bc16381ee0be93a091b8e3824cf01f889f46d7d9e20910fb0be1ab0fb5baa80dd621",
   "scripts": {
-    "build": "tsc && chmod 755 build/index.js",
-    "test": "vitest run"
-  },
-  "dependencies": {
-    "@modelcontextprotocol/server": "^2.0.0",
-    "zod": "^4.4.3"
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "format": "turbo run format",
+    "fix": "turbo run fix",
+    "check-types": "turbo run check-types"
   },
   "devDependencies": {
-    "@types/node": "^26.2.0",
-    "typescript": "^7.0.2",
-    "vitest": "^4.1.11"
+    "@biomejs/biome": "2.5.9",
+    "turbo": "^2"
   }
 }
