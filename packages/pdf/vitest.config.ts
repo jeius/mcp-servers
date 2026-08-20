@@ -7,7 +7,6 @@ export default defineConfig({
     outputFile: {
       blob: 'coverage/blob/report.json',
     },
-    setupFiles: ['test/**/**'],
     passWithNoTests: true,
   },
 });

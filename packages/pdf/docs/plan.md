@@ -11,18 +11,18 @@ Phased roadmap for the PDF MCP Server. Execution status lives in GitHub Issues (
 - [x] Product doc: `docs/PRD.md` (this plan's source of truth)
 - [x] Published to GitHub: https://github.com/jeius/mcp-servers
 
-## Phase 1 — Core read tools (next)
+## Phase 1 — Core read tools (done)
 
 Ship the two initial tools specced in `docs/PRD.md`.
 
-- [ ] Add `unpdf` (^1.8.1) dependency; set `engines.node` `>=22` in `package.json`
-- [ ] `src/index.ts` — `McpServer` + `StdioServerTransport` entrypoint, registers `pdf.read` + `pdf.info`
-- [ ] `pdf.read` — input schema (path/password/pages/structured/maxPages/maxChars), Page Range parser, extraction via `getDocumentProxy` + `extractText`/`extractTextItems`, size caps + truncation note, `structuredContent` + `outputSchema`
-- [ ] `pdf.info` — metadata via `getMeta` + permissions via `pdf.getPermissions()` (decode Table 22 bits), `encrypted` flag, omit empties
-- [ ] Error handling — try/catch in every handler → `isError: true` results; absolute-path zod refine
-- [ ] Fixtures — committed license-clear PDF, non-PDF file, encrypted PDF (known password) under `tests/fixtures/`
-- [ ] Tests (Vitest) — tool-handler seam only; coverage priorities per PRD §Testing Decisions
-- [ ] `pnpm build` + `pnpm test` green
+- [x] Add `unpdf` (^1.8.1) dependency; set `engines.node` `>=22` in `package.json`
+- [x] `src/index.ts` — `McpServer` + `StdioServerTransport` entrypoint, registers `pdf.read` + `pdf.info`
+- [x] `pdf.read` — input schema (path/password/pages/structured/maxPages/maxChars), Page Range parser, extraction via `getDocumentProxy` + `extractText`/`extractTextItems`, size caps + truncation note, `structuredContent` + `outputSchema`
+- [x] `pdf.info` — metadata via `getMeta` + permissions via `pdf.getPermissions()` (decode Table 22 bits), `encrypted` flag, omit empties
+- [x] Error handling — try/catch in every handler → `isError: true` results; absolute-path zod refine
+- [x] Fixtures — committed license-clear PDF, non-PDF file, encrypted PDF (known password) under `tests/fixtures/`
+- [x] Tests (Vitest) — tool-handler seam only; coverage priorities per PRD §Testing Decisions
+- [x] `pnpm build` + `pnpm test` green
 
 ## Phase 2 — Read-side roadmap tools (no new deps)
 
