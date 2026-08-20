@@ -7,6 +7,7 @@ A monorepo of Model Context Protocol servers. Each server under `packages/` is a
 | Package | Description |
 |---|---|
 | [`@jeius-mcp-servers/pdf`](packages/pdf/) | Reads PDF files from local disk; returns text and positional structure to an LLM host over stdio. |
+| [`@jeius-mcp-servers/runner`](packages/runner/) | Internal runner (`mcp-serve`) that builds and runs any server in the workspace by name. Not a server itself. |
 
 ## Quickstart
 
@@ -19,12 +20,50 @@ pnpm lint
 
 Requires Node >=22 and pnpm (managed via corepack — the `packageManager` field in the root `package.json` pins the exact version).
 
+## Usage
+
+Servers are run through the runner binary, `mcp-serve`, which the root delegates to with `pnpm serve <name>`.
+
+Run a server (builds first, then runs over stdio):
+
+```sh
+pnpm serve pdf
+```
+
+Develop a server (watches `src/`, rebuilds, and respawns on a clean rebuild; keeps the last-good server running on a compile error):
+
+```sh
+pnpm serve pdf --dev
+```
+
+Skip the build precondition when you know the build is current (run-only; ignored by `--dev`):
+
+```sh
+pnpm serve pdf --no-build
+```
+
+Point an MCP host at a server by invoking the `mcp-serve` bin directly with the server name as the argument:
+
+```json
+{
+  "mcpServers": {
+    "pdf": {
+      "command": "/absolute/path/to/node_modules/.bin/mcp-serve",
+      "args": ["pdf"]
+    }
+  }
+}
+```
+
+A typo'd name prints the list of known servers to stderr and exits non-zero.
+
 ## Repository layout
 
 ```
 .
 ├── packages/
-│   └── pdf/                # @jeius-mcp-servers/pdf
+│   ├── pdf/                # @jeius-mcp-servers/pdf
+│   └── runner/            # @jeius-mcp-servers/runner (the mcp-serve runner)
 ├── docs/
 │   ├── adr/                # repo-wide Architecture Decision Records
 │   └── agents/             # repo-wide agent conventions (issue tracker, domain docs)
