@@ -1,0 +1,7 @@
+{
+  "name": "@fixture/clitool",
+  "version": "1.0.0",
+  "bin": {
+    "clitool": "./build/index.js"
+  }
+}

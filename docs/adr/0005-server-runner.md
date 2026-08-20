@@ -18,7 +18,7 @@ Add an internal runner package `packages/runner/` named `@jeius-mcp-servers/runn
 **Interface:** `mcp-serve <server> [--dev] [--no-build]`. One name argument; `--dev` enters watch mode; `--no-build` (run-only) skips the build precondition.
 
 **Implementation (deep module):**
-- **Discovery:** resolve the name via bin introspection — read `pnpm-workspace.yaml`, walk sibling packages, read each `bin` field. The `bin` name *is* the server identity; adding a server = add a package with a `bin`, zero runner or root edits.
+- **Discovery:** resolve the name via bin introspection — read `pnpm-workspace.yaml`, walk sibling packages, read each `bin` field. The `bin` name *is* the server identity. Membership in the Server Family additionally requires a dependency on the MCP server SDK (`@modelcontextprotocol/server`): this keeps tool bins (including `mcp-serve` itself) out of the server pool. Adding a server = add a package with a `bin` + the SDK dep; zero runner or root edits. A named package with no `bin` is "not a server"; a named package outside the family is simply "no server named …".
 - **Build precondition:** ensure built via `turbo build --filter=<name>` before spawn (skippable with `--no-build`, run-only). The caller never hits a stale-run failure.
 - **Spawn:** `node <entry>` with stdio inherited (MCP needs pristine stdin/stdout). Forward `SIGINT`/`SIGTERM` to the child for a clean stdio close.
 - **cwd:** works from any directory — walk up for `pnpm-workspace.yaml` to locate the workspace root.
