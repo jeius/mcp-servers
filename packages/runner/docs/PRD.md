@@ -40,7 +40,7 @@ The decision record is ADR-0005; the executable surface is `packages/runner/src/
 - **Args passthrough to the server** (for a future non-stdio transport) — the seam exists; don't fill it yet. (ADR-0005 §Consequences)
 - **`run all`** (a multi-server supervisor) — YAGNI until a second server needs concurrent launch.
 - **A root bin / publishing** `@jeius-mcp-servers` itself — root stays `private: true`.
-- **HTTP/streamable transport** — stdio only; `mcp-serve` is a process launcher.
+- **HTTP/streamable transport** — stdio only; `mcp-serve` is a process runner over stdio.
 
 ## Further Notes
 

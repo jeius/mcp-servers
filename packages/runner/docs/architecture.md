@@ -33,7 +33,7 @@ Three layers, one direction of dependency (composition root → process → pure
 
 3. **Pure layer (`src/resolve.ts`, `src/build-filter.ts`, `src/errors.ts`)** — the **test seams**. `findWorkspaceRoot`, workspace-glob parsing, `resolveServer(name, root) → { name, binName, packageName, packageDir, entryPath }`, `buildFilterFor(packageName)`, and the typed `ServerError` family. This layer has no I/O side effects beyond reading package manifests (via `fs`, exercised with a fixture workspace in tests).
 
-The pure layer is the test surface: `resolveServer` and `buildFilterFor` are the only things unit-tested. The process layer is deliberately thin and is verified end-to-end by the `RUN_SMOKE=1` smoke test (boots the real pdf server, asserts an MCP `initialize` handshake over stdio).
+The pure layer is the test surface: `resolveServer` and `buildFilterFor` are the only things unit-tested. The process layer is deliberately thin. Its run-mode spawn path — resolve → build → `node <entry>` → handshake — is exercised by the `RUN_SMOKE=1` smoke test; the signal-forwarding and dev-respawn glue is verified manually during development.
 
 ## Module layout
 
