@@ -5,6 +5,10 @@ import { readInputSchema, readHandler } from '../src/tools/read.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const fixture = (name: string) => join(here, 'fixtures', name);
+const textContent = (result: Awaited<ReturnType<typeof readHandler>>): string => {
+  const item = result.content[0];
+  return item.type === 'text' ? item.text : '';
+};
 
 describe('pdf.read happy path', () => {
   it('extracts all pages with page markers and structuredContent', async () => {
@@ -13,7 +17,7 @@ describe('pdf.read happy path', () => {
 
     expect(result.isError).not.toBe(true);
 
-    const text = result.content[0].text;
+    const text = textContent(result);
     expect(text).toContain('--- Page 1 ---');
     expect(text).toContain('Page one content');
     expect(text).toContain('--- Page 2 ---');
@@ -40,8 +44,8 @@ describe('pdf.read page range', () => {
     const sc = result.structuredContent as { pagesReturned: number; pages: { page: number }[] };
     expect(sc.pagesReturned).toBe(1);
     expect(sc.pages[0].page).toBe(1);
-    expect(result.content[0].text).toContain('Page one content');
-    expect(result.content[0].text).not.toContain('Page two content');
+    expect(textContent(result)).toContain('Page one content');
+    expect(textContent(result)).not.toContain('Page two content');
   });
 
   it('selects a comma list', async () => {
@@ -68,7 +72,7 @@ describe('pdf.read page range', () => {
     const args = readInputSchema.parse({ path: fixture('sample.pdf'), pages: 'abc' });
     const result = await readHandler(args);
     expect(result.isError).toBe(true);
-    expect(result.content[0].text).toContain('Invalid page range');
+    expect(textContent(result)).toContain('Invalid page range');
   });
 });
 
@@ -106,8 +110,8 @@ describe('pdf.read size caps', () => {
     const sc = result.structuredContent as { pagesReturned: number; pages: { page: number }[] };
     expect(sc.pagesReturned).toBe(1);
     expect(sc.pages[0].page).toBe(1);
-    expect(result.content[0].text).toContain('[truncated, pages 1-1 of 2 shown]');
-    expect(result.content[0].text).not.toContain('Page two content');
+    expect(textContent(result)).toContain('[truncated, pages 1-1 of 2 shown]');
+    expect(textContent(result)).not.toContain('Page two content');
   });
 
   it('caps total characters at maxChars and appends a char-truncation note', async () => {
@@ -116,9 +120,9 @@ describe('pdf.read size caps', () => {
     const sc = result.structuredContent as { pagesReturned: number; pages: { page: number }[] };
     expect(sc.pagesReturned).toBe(1);
     expect(sc.pages[0].page).toBe(1);
-    expect(result.content[0].text).toContain('Page one content');
-    expect(result.content[0].text).not.toContain('Page two content');
-    expect(result.content[0].text).toContain('[truncated at 33 characters]');
+    expect(textContent(result)).toContain('Page one content');
+    expect(textContent(result)).not.toContain('Page two content');
+    expect(textContent(result)).toContain('[truncated at 33 characters]');
   });
 });
 
@@ -127,34 +131,34 @@ describe('pdf.read error paths', () => {
     const args = readInputSchema.parse({ path: fixture('does-not-exist.pdf') });
     const result = await readHandler(args);
     expect(result.isError).toBe(true);
-    expect(result.content[0].text).toContain('not found');
+    expect(textContent(result)).toContain('not found');
   });
 
   it('returns isError for a non-PDF file', async () => {
     const args = readInputSchema.parse({ path: fixture('not-pdf.txt') });
     const result = await readHandler(args);
     expect(result.isError).toBe(true);
-    expect(result.content[0].text).toContain('not a valid PDF');
+    expect(textContent(result)).toContain('not a valid PDF');
   });
 
   it('returns isError for an encrypted PDF without a password', async () => {
     const args = readInputSchema.parse({ path: fixture('encrypted.pdf') });
     const result = await readHandler(args);
     expect(result.isError).toBe(true);
-    expect(result.content[0].text).toContain('encrypted');
+    expect(textContent(result)).toContain('encrypted');
   });
 
   it('returns isError for an encrypted PDF with the wrong password', async () => {
     const args = readInputSchema.parse({ path: fixture('encrypted.pdf'), password: 'wrong' });
     const result = await readHandler(args);
     expect(result.isError).toBe(true);
-    expect(result.content[0].text).toContain('Incorrect password');
+    expect(textContent(result)).toContain('Incorrect password');
   });
 
   it('reads an encrypted PDF with the correct password', async () => {
     const args = readInputSchema.parse({ path: fixture('encrypted.pdf'), password: 'secret' });
     const result = await readHandler(args);
     expect(result.isError).not.toBe(true);
-    expect(result.content[0].text).toContain('Page one content');
+    expect(textContent(result)).toContain('Page one content');
   });
 });

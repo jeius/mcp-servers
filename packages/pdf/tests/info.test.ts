@@ -5,6 +5,10 @@ import { infoInputSchema, infoHandler } from '../src/tools/info.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const fixture = (name: string) => join(here, 'fixtures', name);
+const textContent = (result: Awaited<ReturnType<typeof infoHandler>>): string => {
+  const item = result.content[0];
+  return item.type === 'text' ? item.text : '';
+};
 
 describe('pdf.info happy path', () => {
   it('returns pages, encrypted=false, metadata, and omits absent/empty fields', async () => {
@@ -26,7 +30,7 @@ describe('pdf.info happy path', () => {
     expect('creationDate' in sc).toBe(false);
     expect('modDate' in sc).toBe(false);
 
-    const text = result.content[0].text;
+    const text = textContent(result);
     expect(text).toContain('Pages: 2');
     expect(text).toContain('Encrypted: no');
     expect(text).toContain('Title: Sample PDF');
@@ -69,27 +73,27 @@ describe('pdf.info encrypted', () => {
     const args = infoInputSchema.parse({ path: fixture('encrypted.pdf') });
     const result = await infoHandler(args);
     expect(result.isError).toBe(true);
-    expect(result.content[0].text).toContain('encrypted');
+    expect(textContent(result)).toContain('encrypted');
   });
 
   it('returns isError for an encrypted PDF with the wrong password', async () => {
     const args = infoInputSchema.parse({ path: fixture('encrypted.pdf'), password: 'wrong' });
     const result = await infoHandler(args);
     expect(result.isError).toBe(true);
-    expect(result.content[0].text).toContain('Incorrect password');
+    expect(textContent(result)).toContain('Incorrect password');
   });
 
   it('returns isError for a non-PDF file', async () => {
     const args = infoInputSchema.parse({ path: fixture('not-pdf.txt') });
     const result = await infoHandler(args);
     expect(result.isError).toBe(true);
-    expect(result.content[0].text).toContain('not a valid PDF');
+    expect(textContent(result)).toContain('not a valid PDF');
   });
 
   it('returns isError for a missing file', async () => {
     const args = infoInputSchema.parse({ path: fixture('does-not-exist.pdf') });
     const result = await infoHandler(args);
     expect(result.isError).toBe(true);
-    expect(result.content[0].text).toContain('not found');
+    expect(textContent(result)).toContain('not found');
   });
 });
